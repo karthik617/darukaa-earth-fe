@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function KpiCard({ label, value }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm px-4 py-3 w-48">
-      <div className="text-sm text-slate-500">{label}</div>
-      <div className="text-2xl font-semibold mt-1">{value}</div>
+    <div className="card px-5 py-4 w-52">
+      <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="text-2xl font-semibold text-slate-800 mt-2">{value}</div>
     </div>
   );
 }

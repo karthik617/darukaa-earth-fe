@@ -1,22 +1,18 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useCallback } from 'react';
+import axios from 'axios';
+import { AuthContext } from './AuthContext';
 
-const API_BASE = import.meta.env.VITE_API_BASE || "";
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
-const AuthContext = createContext(null);
-
-// shared refresh promise
 let refreshPromise = null;
 
 export function AuthProvider({ children, onLogout }) {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // axios instance that sends cookies (for refresh)
   const authApi = axios.create({ baseURL: API_BASE, withCredentials: true });
 
-  // attach access token to requests
   authApi.interceptors.request.use((config) => {
     if (accessToken) {
       config.headers = config.headers || {};
@@ -25,7 +21,6 @@ export function AuthProvider({ children, onLogout }) {
     return config;
   });
 
-  // response interceptor to handle 401 and attempt refresh
   authApi.interceptors.response.use(
     (res) => res,
     async (err) => {
@@ -37,7 +32,9 @@ export function AuthProvider({ children, onLogout }) {
         if (!refreshPromise) {
           refreshPromise = (async () => {
             try {
-              const r = await axios.post(`${API_BASE}/auth/refresh`, null, { withCredentials: true });
+              const r = await axios.post(`${API_BASE}/auth/refresh`, null, {
+                withCredentials: true,
+              });
               setAccessToken(r.data.access_token);
               return r.data.access_token;
             } catch (e) {
@@ -67,8 +64,9 @@ export function AuthProvider({ children, onLogout }) {
 
   const login = useCallback(async (email, password) => {
     const params = new URLSearchParams();
-    params.append("username", email);
-    params.append("password", password);
+    params.append('username', email);
+    params.append('password', password);
+    setLoading(true);
     const resp = await axios.post(`${API_BASE}/auth/login`, params, { withCredentials: true });
     // backend returns access_token and sets refresh cookie automatically
     setAccessToken(resp.data.access_token);
@@ -82,36 +80,18 @@ export function AuthProvider({ children, onLogout }) {
       await axios.post(`${API_BASE}/auth/logout`, null, { withCredentials: true });
     } catch (e) {
       // ignore
-      console.error("logout failed", e);
+      console.error('logout failed', e);
     }
     setAccessToken(null);
     setUser(null);
     if (onLogout) onLogout();
   }, [onLogout]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const r = await axios.post(`${API_BASE}/auth/refresh`, null, { withCredentials: true });
-        setAccessToken(r.data.access_token);
-        setUser({ email: "demo@user" });
-      } catch (e) {
-        console.error("failed to load user", e);
-        setAccessToken(null);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ authApi, login, logout, user, accessToken, setAccessToken, loading }}>
+    <AuthContext.Provider
+      value={{ authApi, login, logout, user, accessToken, setAccessToken, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

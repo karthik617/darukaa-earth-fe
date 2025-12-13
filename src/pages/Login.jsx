@@ -1,42 +1,66 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthProvider";
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const { login } = useAuth();
-  const [email, setEmail] = useState("admin@demo.com");
-  const [password, setPassword] = useState("Password123!");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const nav = useNavigate();
 
-  async function handleSubmit(e) {
+  const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
+      setLoading(true);
       await login(email, password);
-      nav("/projects");
+      nav('/projects');
     } catch (err) {
-      alert("Login failed");
-      console.error(err);
+      setError(err.response?.data?.detail || 'Login failed');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div style={{ maxWidth: 420, margin: "60px auto", padding: 20, border: "1px solid #eee", borderRadius: 8 }}>
-      <h2>Darukaa.Earth — Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 8 }}>
-          <label>Email</label><br />
-          <input value={email} onChange={e => setEmail(e.target.value)} style={{ width: "100%" }} />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>Password</label><br />
-          <input value={password} onChange={e => setPassword(e.target.value)} type="password" style={{ width: "100%" }} />
-        </div>
-        <button type="submit" disabled={loading}>{loading ? "Signing in..." : "Sign in"}</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-sky-50">
+      <div className="card w-full max-w-md p-8">
+        <h1 className="text-2xl font-bold text-center text-emerald-700">Darukaa.Earth</h1>
+        <p className="text-center text-slate-500 mt-2">Carbon & Biodiversity Analytics</p>
+
+        {error && (
+          <div className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={submit} className="mt-6 space-y-4">
+          <input
+            className="input"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type="password"
+            className="input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button className="btn-primary w-full mt-2" disabled={loading} type="submit">
+            {loading ? 'Loading...' : 'Sign In'}
+          </button>
+          <div className="mt-6 text-sm text-center text-slate-500">
+            <Link to="/register" className="text-blue-600 font-medium">
+              Create an account
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
