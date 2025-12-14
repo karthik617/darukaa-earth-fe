@@ -24,22 +24,15 @@ jobs:
 
 
           - name: Install dependencies
-            working-directory: frontend
             run: npm ci
 
-
           - name: Lint
-            working-directory: frontend
             run: npm run lint
 
-
           - name: Format check
-            working-directory: frontend
             run: npm run format -- --check || true
 
-
           - name: Build
-            working-directory: frontend
             env:
                 VITE_API_BASE: https://darukaa-earth-be.onrender.com
             run: npm run build
