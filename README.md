@@ -1,16 +1,127 @@
-# React + Vite
+# Darukaa.Earth – Frontend (React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This is the frontend for **Darukaa.Earth**, a geospatial analytics dashboard for managing carbon and biodiversity projects. It consumes the FastAPI backend and provides an intuitive UI for authentication, project management, geospatial site creation, and analytics visualization.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Framework**: React (Vite)
+* **Styling**: Tailwind CSS
+* **Maps**: MapLibre GL JS + Mapbox Draw
+* **Charts**: Highcharts
+* **Auth**: JWT (with refresh token rotation)
+* **HTTP**: Axios
+* **Routing**: React Router
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Application Structure
+
+```
+src/
+ ├── auth/
+ │   ├── AuthProvider.jsx
+ │   ├── AuthContext.js
+ ├── components/
+ │   ├── MapboxMapComponentWithAuth.jsx
+ │   ├── KpiCard.jsx
+ │   ├── Layout.jsx
+ ├── pages/
+ │   ├── Login.jsx
+ │   ├── Register.jsx
+ │   ├── ProjectsPage.jsx
+ │   ├── ProjectDetails.jsx
+ │   ├── SiteAnalytics.jsx
+ ├── App.jsx
+ └── main.jsx
+```
+
+---
+
+## Key Features
+
+### Authentication
+
+* Login & registration
+* JWT access token with automatic refresh
+* Protected routes
+
+### Project Management
+
+* Create and list projects
+* Navigate into project details
+
+### Geospatial Sites
+
+* Interactive Mapbox map
+* Draw polygons using Mapbox Draw
+* Save sites to backend (GeoJSON)
+* Display saved sites on map
+
+### Analytics
+
+* Highcharts timeseries
+* Carbon & biodiversity KPIs
+* Adjustable time range
+
+---
+
+## Environment Variables
+
+Create `.env` file:
+
+```
+VITE_API_BASE=http://localhost:8000
+```
+
+---
+
+## Local Development Setup
+
+### 1. Clone Repository
+
+```bash
+git clone <repo-url>
+cd darukaa-earth-fe
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Run Development Server
+
+```bash
+npm run dev
+```
+
+App available at: `http://localhost:5175`
+
+---
+
+## CI/CD & Code Quality
+
+* Husky pre-commit hooks
+* lint-staged + Prettier
+* ESLint enforcement
+* GitHub Actions build check
+
+---
+
+## Deployment
+
+* Deployed on Render
+* Environment variables configured via platform dashboard
+
+---
+
+## Notes for Reviewers
+
+* Analytics data is mock-generated for demo
+* Strong separation of concerns (auth, data, UI)
+
