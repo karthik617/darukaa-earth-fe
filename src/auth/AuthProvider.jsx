@@ -78,7 +78,6 @@ export function AuthProvider({ children, onLogout }) {
   const logout = useCallback(async () => {
     try {
       await axios.post(`${API_BASE}/auth/logout`, null, { withCredentials: true });
-      window.location.href = '/login';
     } catch (e) {
       // ignore
       console.error('logout failed', e);
