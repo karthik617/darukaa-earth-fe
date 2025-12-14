@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Layout({ children }) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { pathname } = useLocation();
 
   return (
@@ -12,19 +12,20 @@ export default function Layout({ children }) {
           <Link to="/projects" className="text-xl font-bold text-emerald-700">
             🌍 Darukaa.Earth
           </Link>
+          {user && (
+            <nav className="flex items-center gap-6">
+              <Link
+                to="/projects"
+                className={`text-sm ${pathname.startsWith('/projects') ? 'text-emerald-700 font-medium' : ''}`}
+              >
+                Projects
+              </Link>
 
-          <nav className="flex items-center gap-6">
-            <Link
-              to="/projects"
-              className={`text-sm ${pathname.startsWith('/projects') ? 'text-emerald-700 font-medium' : ''}`}
-            >
-              Projects
-            </Link>
-
-            <button onClick={logout} className="text-sm text-slate-500 hover:text-red-600">
-              Logout
-            </button>
-          </nav>
+              <button onClick={logout} className="text-sm text-slate-500 hover:text-red-600">
+                Logout
+              </button>
+            </nav>
+          )}
         </div>
       </header>
 
